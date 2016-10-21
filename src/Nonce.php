@@ -162,8 +162,6 @@ class Nonce {
         } else {
             throw new \Exception("URL parameter name for nonce can not be empty.");
         }
-
-        $this->nonceParamName = $nonceParamName;
     }
 
     /**
