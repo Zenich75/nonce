@@ -37,9 +37,13 @@ try {
 }
 ```
 $salt - Required parameter, set secret salt for nonce (minimum length - 10 symbols)
+
 $length - Optional parameter which sets the length of the nonce string in URL (default - 10)
+
 $lifetime - Optional parameter which sets lifetime of nonce in seconds (default - 3600 (1 hour))
+
 $nonceParamName - Optional parameter which sets URL parameter name for nonce (default - '_nonce')
+
 
 ## Functions
 ### createNonce ($string)
