@@ -157,7 +157,7 @@ class Nonce {
      * @throws \Exception
      */
     public function setParamName($nonceParamName = NULL) {
-        if ($nonceParamName != NULL) {
+        if ($nonceParamName != NULL && (strlen(trim($nonceParamName)) > 0)) {
             $this->nonceParamName = strval($nonceParamName);
         } else {
             throw new \Exception("URL parameter name for nonce can not be empty.");
