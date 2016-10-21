@@ -1,6 +1,24 @@
 # nonce
 Simple custom nonce token generator to prevent string or URL modifications
 
+## Installation
+To install, add code below in your **composer.json**:
+```
+{
+  "require" : {
+    "php" : ">=5.3.0",
+    "Zenich75/nonce" : "dev-master"
+  },
+  "repositories":[
+    {
+      "type":"git",
+      "url":"https://github.com/Zenich75/nonce"
+    }
+  ]
+}
+```
+and run `composer update` from console.
+
 ## Get nonce
 For creating nonce you should create object `Nonce` and transmit string to function `createNonce` as argument.
 In return you get string with nonce of incoming string.
