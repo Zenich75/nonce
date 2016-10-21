@@ -15,6 +15,11 @@ class Nonce {
     protected $maxNonceLength = 20;
 
     /**
+     * integer nonceLength is a default length on generated nonce
+     */
+    protected $nonceLength = 10;
+
+    /**
      * integer nonceLifetime is a lifetime of nonce in seconds bu default one hour
      */
     protected $nonceLifetime = 3600;
@@ -57,6 +62,8 @@ class Nonce {
 
         if($lifetime != NULL && intval($lifetime) >= 60){
             $this->nonceLifetime = intval($lifetime);
+        } else {
+            throw new \Exception('Nonce lifetime is empty or to short (60 seconds is a minimum).');
         }
 
         if($nonceParamName != NULL){
@@ -82,28 +89,6 @@ class Nonce {
      */
     private function generateHash ($string) {
         return sha1($string);
-    }
-
-    /**
-     * Bit per bit comparison of the expected and the received nonce string
-     *
-     * @param $a
-     * @param $b
-     * @return bool
-     */
-    private function isHashEquals($a, $b) {
-        $a_length = strlen($a);
-        if ($a_length !== strlen($b)) {
-            return false;
-        }
-
-        $result = 0;
-
-        for ($i=0; $i<$a_length; $i++) {
-            $result |= ord($a[$i]) ^ ord($b[$i]);
-        }
-
-        return $result === 0;
     }
 
     /**
@@ -141,14 +126,14 @@ class Nonce {
         // Nonce generated 0 - 1/2 lifetime ago
         $expected = $this->createNonce($string, $currentTick);
 
-        if ($this->isHashEquals($expected, $nonce)) {
+        if (strcmp($expected, $nonce) == 0) {
             return true;
         }
 
         // Nonce generated 1/2 - 1 lifetime ago
         $expected = $this->createNonce($string, $currentTick - 1);
 
-        if ($this->isHashEquals($expected, $nonce)) {
+        if (strcmp($expected, $nonce) == 0) {
             return true;
         }
 
@@ -159,13 +144,34 @@ class Nonce {
      * Function for returning nonce as url part
      *
      * @param string $string url or part of url that should be hashed
-     * @param null|string $nonceParamName name of custom parameter instead of standard
      * @return string as a part of url
      */
-    public function nonceUrl ($string, $nonceParamName = NULL) {
+    public function nonceUrl ($string) {
+        return urlencode($this->nonceParamName . "=" . $this->createNonce($string));
+    }
+
+    /**
+     * Set URL parameter name for nonce
+     *
+     * @param null|string $nonceParamName name of custom parameter instead of standard
+     * @throws \Exception
+     */
+    public function setParamName($nonceParamName = NULL) {
         if ($nonceParamName != NULL) {
             $this->nonceParamName = strval($nonceParamName);
+        } else {
+            throw new \Exception("URL parameter name for nonce can not be empty.");
         }
-        return urlencode($this->nonceParamName . "=" . $this->createNonce($string));
+
+        $this->nonceParamName = $nonceParamName;
+    }
+
+    /**
+     * Get URL parameter name for nonce
+     *
+     * @return string
+     */
+    public function getParamName() {
+        return $this->nonceParamName;
     }
 }
